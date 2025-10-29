@@ -3,6 +3,7 @@ import type { GetStaticPaths } from "astro";
 
 import { getCollection, getEntry, render } from "astro:content";
 
+import { Image } from "astro:assets";
 import { formatBlogDateLong } from "@util/format";
 import BaseLayout from "@components/BaseLayout.astro";
 import Header from "@components/Header.astro";
@@ -38,6 +39,16 @@ const updatedDate = post.data.updatedDate ? post.data.updatedDate.toISOString() 
         {post.data.tags.map(tag => <Tag id={tag}/>)}
       </div>
 
+      {post.data.image && 
+        <Image
+          src={post.data.image}
+          alt="Hero Image"
+          widths={[400, 800, 1200]}
+          sizes="100vw"
+          class="responsive-image"
+        />
+      }
+
       <hr class="page-sep" />
 
       <div class="md-content">
@@ -50,6 +61,12 @@ const updatedDate = post.data.updatedDate ? post.data.updatedDate.toISOString() 
 <style>
 h1 {
   margin: 0;
+}
+
+.responsive-image {
+  margin-top: 1rem;
+  width: 100%;
+  height: auto;
 }
 
 .published, .updated {
