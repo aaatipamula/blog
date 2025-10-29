@@ -2,13 +2,18 @@
 import { getTagUrl } from "@util/url";
 
 interface Props {
-  id: string;
+  ids: string[];
 }
 
-const { id } = Astro.props;
+const { ids } = Astro.props;
+
+ids.sort();
 ---
 
-<a href={getTagUrl(id)} class="tag">{id}</a>
+{ids.map(id => (
+  <a href={getTagUrl(id)} class="tag">{id}</a>
+))}
+
 
 <style>
 .tag {

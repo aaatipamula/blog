@@ -36,7 +36,7 @@ const updatedDate = post.data.updatedDate ? post.data.updatedDate.toISOString() 
         Published: {formatBlogDateLong(post.data.publishedDate)}
       </p>
       <div class="tag-container">
-        {post.data.tags.map(tag => <Tag id={tag}/>)}
+        <Tag ids={post.data.tags} />
       </div>
 
       {post.data.image && 

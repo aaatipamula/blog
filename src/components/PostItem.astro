@@ -20,7 +20,7 @@ const { postData, id } = Astro.props;
   </div>
   {postData.subTitle && <p class="subtitle">{postData.subTitle}</p>}
   <div class="tag-container">
-    {postData.tags.map(tag => <Tag id={tag} />)}
+    <Tag ids={postData.tags} />
   </div>
 </div>
 

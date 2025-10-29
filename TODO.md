@@ -1,5 +1,4 @@
-- Pagination
-- Images in markdown
+- Pagination ?
 - Implement search
 - Heading links
 - Admonitions for blockquotes
