@@ -1,0 +1,113 @@
+---
+import type { GetStaticPaths } from "astro";
+
+import { getCollection, getEntry, render } from "astro:content";
+
+import { formatBlogDateLong } from "@util/format";
+import BaseLayout from "@components/BaseLayout.astro";
+import Header from "@components/Header.astro";
+import Tag from "@components/Tag.astro";
+
+export const getStaticPaths = (async () => {
+  const allBlogPosts = await getCollection("blogPosts");
+  const blogPosts = allBlogPosts
+    .filter(p => p.data.isPublic)
+
+  return blogPosts.map(p => ({ params: { id: p.id }}));
+}) satisfies GetStaticPaths;
+
+const { id } = Astro.params;
+
+const post = await getEntry("blogPosts", id)!; // NOTE: Post should never be undefined
+const { Content } = await render(post);
+const updatedDate = post.data.updatedDate ? post.data.updatedDate.toISOString() : "";
+---
+
+<BaseLayout>
+  <div class="container">
+    <Header />
+    <div class="main-content">
+      <div class="title-box">
+        <h1 class="title">{post.data.title}</h1>
+        {post.data.subTitle && <p class="subtitle">{post.data.subTitle}</p>}
+      </div>
+      <p class="published" data-lastupdated={updatedDate}>
+        Published: {formatBlogDateLong(post.data.publishedDate)}
+      </p>
+      <div class="tag-container">
+        {post.data.tags.map(tag => <Tag id={tag}/>)}
+      </div>
+
+      <hr class="page-sep" />
+
+      <div class="md-content">
+        <Content />
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+h1 {
+  margin: 0;
+}
+
+.published, .updated {
+  color: var(--text-muted);
+}
+
+.container {
+  margin: 0 auto;
+  width: var(--content-width);
+  flex: 1;
+}
+
+.main-content {
+  padding: 0.5rem 1.5rem;
+  background-color: var(--color-bg);
+  border-radius: 10px;
+}
+
+.md-content {
+  a {
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  a:hover {
+    color: var(--blue-muted);
+  }
+
+}
+
+.title-box {
+  margin-top: 0.5rem;
+}
+
+.tag-container {
+  margin: 0.7rem 0;
+}
+
+.page-sep {
+  margin: 2rem 0;
+  color: var(--text-muted);
+}
+</style>
+
+<script>
+import { timeAgo } from "@util/format";
+import { wrapPreCopy } from "@util/wrapPre";
+
+const publishedElem = document.querySelector<HTMLParagraphElement>(".published")!;
+
+if (publishedElem.dataset.lastupdated) {
+  const updatedDateTime = new Date(publishedElem.dataset.lastupdated);
+  const lastUpdatedStr = timeAgo(updatedDateTime);
+  publishedElem.innerText += ` (Last Updated: ${lastUpdatedStr})`;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("pre").forEach(pre => wrapPreCopy(pre));
+});
+</script>

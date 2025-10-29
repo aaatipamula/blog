@@ -1,0 +1,50 @@
+---
+import type { GetStaticPaths } from "astro";
+
+import { getCollection } from "astro:content";
+import BaseLayout from "@components/BaseLayout.astro";
+import Header from "@components/Header.astro";
+import PostItem from "@components/PostItem.astro";
+
+export const getStaticPaths = (async () => {
+  const allBlogPosts = await getCollection("blogPosts");
+  const allTags = Array.from(new Set(allBlogPosts.flatMap(p => p.data.tags)));
+
+  return allTags.map(t => ({ params: { tagName: t }}));
+}) satisfies GetStaticPaths;
+
+const { tagName } = Astro.params;
+
+const allBlogPosts = await getCollection("blogPosts");
+const blogPosts = allBlogPosts
+  .filter(p => p.data.isPublic && p.data.tags.includes(tagName))
+  .sort((a, b) => b.data.publishedDate - a.data.publishedDate);
+---
+
+<BaseLayout>
+  <div class="container">
+    <Header />
+
+    <hr class="page-sep" />
+
+    <h1>Posts with Tag: <code>{tagName}</code></h1>
+
+    <div class="recent-post-container">
+      {blogPosts.map(post => (
+        <PostItem postData={post.data} id={post.id} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.container {
+  width: var(--content-width);
+  margin: auto;
+}
+
+.page-sep {
+  margin: 2rem auto;
+  color: var(--color-border);
+}
+</style>

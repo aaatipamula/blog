@@ -1,0 +1,62 @@
+---
+import PERSONAL_DATA from "@data/personal";
+---
+
+<div class="title-container">
+  <a href="/"><h1>{PERSONAL_DATA.firstName}'s Blog</h1></a>
+
+  <!-- <input class="search-input" placeholder="Search" type="search"/> -->
+
+  <div class="left">
+    <a href={PERSONAL_DATA.website}>
+      <i class="bi bi-globe" />
+    </a>
+    <a href=`mailto:${PERSONAL_DATA.email}`>
+      <i class="bi bi-envelope-at" />
+    </a>
+    {PERSONAL_DATA.socialMedia.map(i => (
+      <a href={i.url}>
+        <i class=`bi ${i.icon}` />
+      </a>
+    ))}
+  </div>
+
+
+</div>
+
+<style>
+
+a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 120ms;
+}
+
+a:hover {
+  color: var(--text-muted);
+}
+
+.left a {
+  margin-left: 0.5rem;
+  font-size: 1.5rem;
+  float: right;
+}
+
+@media (max-width: 600px) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-input {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+}
+</style>

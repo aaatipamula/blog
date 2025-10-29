@@ -1,0 +1,29 @@
+---
+import { getTagUrl } from "@util/url";
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+---
+
+<a href={getTagUrl(id)} class="tag">{id}</a>
+
+<style>
+.tag {
+  color: black;
+  display: inline-block;
+  text-decoration: none;
+  border-radius: 3px;
+  margin-right: 0.2rem;
+  padding: 0.2rem 0.5rem;
+  background-color: var(--color-bg-light);
+
+  transition: background-color 120ms;
+}
+
+.tag:hover {
+  background-color: var(--color-bg-dark);
+}
+</style>

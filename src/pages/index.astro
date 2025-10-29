@@ -1,16 +1,55 @@
 ---
+import BaseLayout from "@components/BaseLayout.astro";
+import PostItem from "@components/PostItem.astro";
+import Header from "@components/Header.astro";
 
+import { getCollection } from "astro:content";
+
+const allBlogPosts = await getCollection("blogPosts");
+
+const blogPosts = allBlogPosts
+  .filter(p => p.data.isPublic)
+  .sort((a, b) => b.data.publishedDate - a.data.publishedDate);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+  <div class="container">
+    <Header />
+
+    <hr class="page-sep" />
+
+    <h1>Recent Posts</h1>
+
+    <div class="recent-post-container">
+      {blogPosts.map(post => (
+        <PostItem postData={post.data} id={post.id} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.container {
+  width: var(--content-width);
+  margin: auto;
+}
+
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-input {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+}
+
+.page-sep {
+  margin: 2rem auto;
+  color: var(--color-border);
+}
+</style>
+

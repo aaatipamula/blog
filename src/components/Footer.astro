@@ -1,0 +1,39 @@
+---
+import PERSONAL_DATA from "@data/personal";
+
+const today = new Date(Date.now());
+---
+
+<div class="footer">
+  <div class="left">
+    
+  </div>
+
+  <div class="center">
+    © {today.getFullYear()} {PERSONAL_DATA.lastName}, {PERSONAL_DATA.firstName} - Built with Astro
+  </div>
+
+  <div class="right">
+  </div>
+</div>
+
+<style>
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1rem;
+  margin-top: 1rem;
+  background-color: var(--color-bg);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .center {
+    display: none;
+  }
+}
+
+</style>
+

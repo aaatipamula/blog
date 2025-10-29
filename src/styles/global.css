@@ -1,0 +1,135 @@
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+/* Base Styles (Desktop) */
+:root {
+  --font-size: 16px;
+  --content-width: 70%;
+
+  /* Colors */
+  --color-bg-light: hsl(50 10% 95%);
+  --color-bg: hsl(50 10% 90%);
+  --color-bg-dark: hsl(50 10% 85%);
+
+  --red: hsl(0 50% 50%);
+  --red-muted: hsl(0 50% 60%);
+  --orange: hsl(30 50% 50%);
+  --orange-muted: hsl(30 50% 60%);
+  --yellow: hsl(50 50% 60%);
+  --yellow-muted: hsl(60 50% 60%);
+  --yellow-green: hsl(90 50% 50%);
+  --yellow-green-muted: hsl(90 50% 60%);
+  --green: hsl(120 50% 50%);
+  --green-muted: hsl(120 50% 60%);
+  --cyan: hsl(180 50% 50%);
+  --cyan-muted: hsl(180 50% 60%);
+  --blue: hsl(240 50% 50%);
+  --blue-muted: hsl(240 50% 60%);
+  --indigo: hsl(270 50% 50%);
+  --indigo-muted: hsl(270 50% 60%);
+  --magenta: hsl(270 50% 50%);
+  --magenta-muted: hsl(270 50% 60%);
+  --violet: hsl(270 50% 50%);
+  --violet-muted: hsl(270 50% 60%);
+
+  --color-code: hsl(50 10% 80%);
+
+  --color-border: hsl(50 10% 30%);
+
+  --text: hsl(50 10% 10%);
+  --text-muted: hsl(50 10% 30%);
+
+  /* Media query boundaries */
+  --mq-tablet: 900px;
+  --mq-mobile: 600px;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  :root {
+    --font-size: 14px;
+    --content-width: 80%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  :root {
+    --font-size: 12px;
+    --content-width: 90%;
+  }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overscroll-behavior: none;
+}
+
+body { 
+  display: flex;
+  flex-direction: column;
+
+  width: 100dvw;
+  min-height: 100dvh;
+  font-size: var(--font-size);
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+
+  background-color: var(--color-bg-dark);
+  color: var(--text);
+}
+
+pre {
+  border-radius: 5px;
+  padding: 1rem;
+}
+
+code {
+  font-family: "Source Code Pro", monospace;
+}
+
+code:not(pre code) {
+  border-radius: 3px;
+  background-color: var(--color-code);
+  padding: 0 0.3rem;
+}
+
+blockquote {
+  margin-left: 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--color-border);
+}
+
+.clickable {
+  /* display: inline-block; */
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* mobile: remove highlight */
+}
+
+.pre-wrapper {
+  position: relative;
+}
+
+.copy-btn {
+  color: var(--color-bg-light);
+  background-color: #ffffff00;
+  border: none;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+}
+
+.copy-btn:active {
+  transform: scale(0.95);
+}
+

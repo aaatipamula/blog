@@ -1,0 +1,76 @@
+---
+import type { InferEntrySchema } from 'astro:content';
+
+import { formatBlogDateShort } from "@util/format"
+import { getPostUrl } from "@util/url"
+import Tag from "@components/Tag.astro"
+
+interface Props {
+  postData: InferEntrySchema<'blogPosts'>,
+  id: string,
+};
+
+const { postData, id } = Astro.props;
+---
+
+<div class="item-container clickable" data-url={getPostUrl(id)} tabindex="0" role="button">
+  <div class="item-title">
+    <h3 class="title">{postData.title}</h3>
+    <p>{formatBlogDateShort(postData.publishedDate)}</p>
+  </div>
+  {postData.subTitle && <p class="subtitle">{postData.subTitle}</p>}
+  <div class="tag-container">
+    {postData.tags.map(tag => <Tag id={tag} />)}
+  </div>
+</div>
+
+<style>
+h3, p {
+  margin: 0;
+}
+
+.subtitle {
+  color: var(--text-muted)
+}
+
+.item-container {
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  transition: transform 120ms;
+  box-shadow: 
+    rgba(14, 63, 126, 0.04) 0px 0px 0px 1px, 
+    rgba(42, 51, 69, 0.04) 0px 1px 1px -0.5px,
+    rgba(42, 51, 70, 0.04) 0px 3px 3px -1.5px,
+    rgba(42, 51, 70, 0.04) 0px 6px 6px -3px,
+    rgba(14, 63, 126, 0.04) 0px 12px 12px -6px, 
+    rgba(14, 63, 126, 0.04) 0px 24px 24px -12px;
+}
+
+.item-container:hover {
+  transform: translateX(10px);
+}
+
+.item-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.tag-container {
+  margin: 0.7rem 0;
+}
+</style>
+
+<script>
+const postElements = document.querySelectorAll<HTMLDivElement>("div.item-container")!;
+
+postElements.forEach(postElement => {
+  postElement.addEventListener('click', () => {
+    window.location.href = postElement.dataset.url!;
+  });
+});
+</script>
