@@ -13,7 +13,7 @@ interface Props {
 const { postData, id } = Astro.props;
 ---
 
-<div class="item-container clickable" data-url={getPostUrl(id)} tabindex="0" role="button">
+<button class="item-container" data-url={getPostUrl(id)}>
   <div class="item-title">
     <h3 class="title">{postData.title}</h3>
     <p>{formatBlogDateShort(postData.publishedDate)}</p>
@@ -22,7 +22,7 @@ const { postData, id } = Astro.props;
   <div class="tag-container">
     <Tag ids={postData.tags} />
   </div>
-</div>
+</button>
 
 <style>
 h3, p {
@@ -34,6 +34,14 @@ h3, p {
 }
 
 .item-container {
+  /* display: block; */
+  width: 100%;
+  font: inherit;
+  outline: inherit;
+  color: inherit;
+  text-align: left;
+
+  cursor: pointer;
   border-radius: 10px;
   border: 1px solid var(--color-border);
   background-color: var(--color-bg);
@@ -66,7 +74,7 @@ h3, p {
 </style>
 
 <script>
-const postElements = document.querySelectorAll<HTMLDivElement>("div.item-container")!;
+const postElements = document.querySelectorAll<HTMLDivElement>("button.item-container")!;
 
 postElements.forEach(postElement => {
   postElement.addEventListener('click', () => {
