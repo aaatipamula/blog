@@ -1,0 +1,33 @@
+#!/bin/bash
+
+POST_NAME="$1"
+
+if [ -z "$POST_NAME" ]; then
+  echo "No post name given."
+  exit 1
+fi
+
+POST_FILE="./posts/$POST_NAME.md"
+
+create_file()
+{
+  touch "$1"
+
+  echo "---"             >> "$1"
+  echo "title: "         >> "$1"
+  echo "subTitle: "      >> "$1"
+  echo "tags: []"        >> "$1"
+  echo "publishedDate: " >> "$1"
+  echo "updatedDate: "   >> "$1"
+  echo "isPublic: false" >> "$1"
+  echo "---"             >> "$1"
+  echo                   >> "$1"
+}
+
+if ! [ -f "$POST_FILE" ]; then
+  create_file "$POST_FILE" 
+  $VISUAL "$POST_FILE"
+else
+  echo "Post ($POST_FILE) already exists!"
+fi
+

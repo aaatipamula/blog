@@ -10,9 +10,10 @@ import Header from "@components/Header.astro";
 import Tag from "@components/Tag.astro";
 
 export const getStaticPaths = (async () => {
+  const isDev = import.meta.env.DEV;
   const allBlogPosts = await getCollection("blogPosts");
   const blogPosts = allBlogPosts
-    .filter(p => p.data.isPublic)
+    .filter(p => p.data.isPublic || isDev)
 
   return blogPosts.map(p => ({ params: { id: p.id }}));
 }) satisfies GetStaticPaths;
@@ -77,6 +78,7 @@ h1 {
   margin: 0 auto;
   width: var(--content-width);
   flex: 1;
+  line-height: 2;
 }
 
 .main-content {

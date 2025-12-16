@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "astro": "^5.15.1",
+    "astro-mermaid": "^1.2.0",
     "bootstrap-icons": "^1.13.1"
   }
 }

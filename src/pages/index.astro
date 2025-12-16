@@ -5,10 +5,12 @@ import Header from "@components/Header.astro";
 
 import { getCollection } from "astro:content";
 
+const isDev = import.meta.env.DEV;
+
 const allBlogPosts = await getCollection("blogPosts");
 
 const blogPosts = allBlogPosts
-  .filter(p => p.data.isPublic)
+  .filter(p => p.data.isPublic || isDev)
   .sort((a, b) => b.data.publishedDate - a.data.publishedDate);
 ---
 

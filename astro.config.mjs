@@ -1,8 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import astroMermaid from 'astro-mermaid';
 
 // https://astro.build/config
 export default defineConfig({
+  integrations: [astroMermaid()],
   markdown: {
     shikiConfig: {
       // Choose from Shiki's built-in themes (or add your own)

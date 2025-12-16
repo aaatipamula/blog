@@ -9,8 +9,8 @@ const blogPosts = defineCollection({
     subTitle: z.string().optional(),
     tags: z.array(z.string()),
     image: image().optional(),
-    publishedDate: z.string().transform(str => new Date(str)),
-    updatedDate: z.string().optional().transform(str => str ? new Date(str) : null),
+    publishedDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
     isPublic: z.boolean(),
   }),
 });

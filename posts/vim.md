@@ -5,7 +5,7 @@ tags: [vim, test, lua]
 image: ../src/images/vim.png
 publishedDate: 10/25/2025 12:00 AM CDT
 updatedDate: 10/27/2025 2:42 PM CDT
-isPublic: true
+isPublic: false
 ---
 
 # Overview

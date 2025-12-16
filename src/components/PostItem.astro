@@ -10,10 +10,11 @@ interface Props {
   id: string,
 };
 
+const isDev = import.meta.env.DEV;
 const { postData, id } = Astro.props;
 ---
 
-<button class="item-container" data-url={getPostUrl(id)}>
+<button class="item-container" data-url={getPostUrl(id)} style={{ opacity: isDev && !postData.isPublic ? '0.4' : '1' }}>
   <div class="item-title">
     <h3 class="title">{postData.title}</h3>
     <p>{formatBlogDateShort(postData.publishedDate)}</p>

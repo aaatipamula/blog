@@ -133,3 +133,8 @@ blockquote {
   transform: scale(0.95);
 }
 
+.mermaid .node path {
+  fill: var(--color-bg-dark) !important;
+  stroke: var(--color-border) !important;
+}
+
