@@ -21,7 +21,7 @@ export default {
     {
       name: "GitHub",
       icon: "bi-github",
-      url: "https://github.com"
+      url: "https://github.com/aaatipamula"
     },
     {
       name: "Spotify",

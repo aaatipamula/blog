@@ -8,6 +8,7 @@ import { formatBlogDateLong } from "@util/format";
 import BaseLayout from "@components/BaseLayout.astro";
 import Header from "@components/Header.astro";
 import Tag from "@components/Tag.astro";
+import LastUpdated from "@components/LastUpdated.astro";
 
 export const getStaticPaths = (async () => {
   const isDev = import.meta.env.DEV;
@@ -33,9 +34,7 @@ const updatedDate = post.data.updatedDate ? post.data.updatedDate.toISOString() 
         <h1 class="title">{post.data.title}</h1>
         {post.data.subTitle && <p class="subtitle">{post.data.subTitle}</p>}
       </div>
-      <p class="published" data-lastupdated={updatedDate}>
-        Published: {formatBlogDateLong(post.data.publishedDate)}
-      </p>
+      <LastUpdated filename={post.filePath} />
       <div class="tag-container">
         <Tag ids={post.data.tags} />
       </div>

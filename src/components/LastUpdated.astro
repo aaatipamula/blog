@@ -1,0 +1,41 @@
+---
+import { parseGitLog, createEmptyCommit, getCommitUrl } from "@util/git";
+import { formatBlogDateLong, timeAgo } from "@util/format";
+
+interface Props {
+  filename: string | undefined;
+}
+
+const { filename } = Astro.props;
+
+if (!filename) {
+  throw Error("Invalid filename");
+}
+
+const gitLog = parseGitLog(filename);
+const latestCommit = gitLog.at(0) || createEmptyCommit();
+const firstCommit = gitLog.at(-1) || createEmptyCommit();
+
+const lastUpdated = latestCommit.date !== firstCommit.date ? timeAgo(latestCommit.date) : null;
+---
+
+<div class="container">
+  Published: {formatBlogDateLong(firstCommit.date)} {lastUpdated && `(Last Updated: ${lastUpdated})`}
+  <ul class="rev-history">
+    {gitLog.map(commit => (
+    <li><a href={getCommitUrl(commit.hash)}>{commit.shortHash}</a> - {commit.message}</li>
+    ))}
+  </ul>
+</div>
+
+<style>
+.container {
+  color: var(--text-muted);
+  font-family: "Source Code Pro", monospace;
+}
+
+.rev-history {
+  /* background-color: var(--color-bg-light); */
+  border-radius: 3px;
+}
+</style>
