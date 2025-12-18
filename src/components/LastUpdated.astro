@@ -21,7 +21,7 @@ const lastUpdated = latestCommit.date !== firstCommit.date ? timeAgo(latestCommi
 
 <div class="container">
   Published: {formatBlogDateLong(firstCommit.date)} {lastUpdated && `(Last Updated: ${lastUpdated})`}
-  <ul class="rev-history">
+  <ul>
     {gitLog.map(commit => (
     <li><a href={getCommitUrl(commit.hash)}>{commit.shortHash}</a> - {commit.message}</li>
     ))}
@@ -34,8 +34,25 @@ const lastUpdated = latestCommit.date !== firstCommit.date ? timeAgo(latestCommi
   font-family: "Source Code Pro", monospace;
 }
 
-.rev-history {
-  /* background-color: var(--color-bg-light); */
+ul {
   border-radius: 3px;
+}
+
+a {
+  color: var(--indigo);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+a:hover {
+  color: var(--indigo-muted);
+}
+
+a:visited {
+  color: var(--violet);
+}
+
+a:visited:hover {
+  color: var(--violet-muted);
 }
 </style>

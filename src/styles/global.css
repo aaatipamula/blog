@@ -24,12 +24,12 @@
   --cyan-muted: hsl(180 50% 60%);
   --blue: hsl(240 50% 50%);
   --blue-muted: hsl(240 50% 60%);
-  --indigo: hsl(270 50% 50%);
-  --indigo-muted: hsl(270 50% 60%);
-  --magenta: hsl(270 50% 50%);
-  --magenta-muted: hsl(270 50% 60%);
+  --indigo: hsl(250 50% 50%);
+  --indigo-muted: hsl(250 50% 60%);
   --violet: hsl(270 50% 50%);
   --violet-muted: hsl(270 50% 60%);
+  --magenta: hsl(300 50% 50%);
+  --magenta-muted: hsl(300 50% 60%);
 
   --color-code: hsl(50 10% 80%);
 
