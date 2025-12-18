@@ -21,7 +21,7 @@ jobs:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
         with:
-          fetch-dept: 0 # Get all the git history for complete revision changes
+          fetch-depth: 0 # Get all the git history for complete revision changes
       - name: Install, build, and upload your site
         uses: withastro/action@v4
         env:
