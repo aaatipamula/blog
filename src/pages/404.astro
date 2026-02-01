@@ -1,0 +1,30 @@
+---
+import BaseLayout from "@components/BaseLayout.astro"
+import Header from "@components/Header.astro"
+---
+
+<BaseLayout>
+  <div class="container">
+  <Header />
+  <div class="content">
+    <p>This page doesn't exist :/</p> 
+  </div>
+  </div> 
+
+  <style>
+  div.container {
+    height: 100dvh;
+    width: 80dvw;
+    margin: auto;
+  }
+
+  div.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+  }
+  </style>
+</BaseLayout>
+
+

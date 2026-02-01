@@ -1,6 +1,6 @@
 ---
 import { parseGitLog, createEmptyCommit, getCommitUrl } from "@util/git";
-import { formatBlogDateLong, timeAgo } from "@util/format";
+import { formatBlogDateLong } from "@util/format";
 
 interface Props {
   filename: string | undefined;
@@ -16,17 +16,37 @@ const gitLog = parseGitLog(filename);
 const latestCommit = gitLog.at(0) || createEmptyCommit();
 const firstCommit = gitLog.at(-1) || createEmptyCommit();
 
-const lastUpdated = latestCommit.date !== firstCommit.date ? timeAgo(latestCommit.date) : null;
+const lastUpdated = latestCommit.date !== firstCommit.date ? latestCommit.date : null;
 ---
 
 <div class="container">
-  Published: {formatBlogDateLong(firstCommit.date)} {lastUpdated && `(Last Updated: ${lastUpdated})`}
+  <p>
+    Published: {formatBlogDateLong(firstCommit.date)} 
+    {lastUpdated && (
+    <span
+      id="last-updated" 
+      data-lastUpdated={lastUpdated.toISOString()}
+    >
+    </span>
+    )}
+  </p>
   <ul>
     {gitLog.map(commit => (
     <li><a href={getCommitUrl(commit.hash)}>{commit.shortHash}</a> - {commit.message}</li>
     ))}
   </ul>
 </div>
+
+<script>
+import { timeAgo } from "@util/format";
+
+const lastUpdated = document.getElementById("last-updated");
+
+if (lastUpdated) {
+  const lastUpdatedTime = new Date(lastUpdated.dataset.lastupdated!);
+  lastUpdated.innerText = `(Last Updated: ${timeAgo(lastUpdatedTime)})`;
+}
+</script>
 
 <style>
 .container {

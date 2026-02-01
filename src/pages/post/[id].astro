@@ -4,7 +4,6 @@ import type { GetStaticPaths } from "astro";
 import { getCollection, getEntry, render } from "astro:content";
 
 import { Image } from "astro:assets";
-import { formatBlogDateLong } from "@util/format";
 import BaseLayout from "@components/BaseLayout.astro";
 import Header from "@components/Header.astro";
 import Tag from "@components/Tag.astro";
@@ -23,7 +22,6 @@ const { id } = Astro.params;
 
 const post = await getEntry("blogPosts", id)!; // NOTE: Post should never be undefined
 const { Content } = await render(post);
-const updatedDate = post.data.updatedDate ? post.data.updatedDate.toISOString() : "";
 ---
 
 <BaseLayout>
@@ -114,16 +112,7 @@ h1 {
 </style>
 
 <script>
-import { timeAgo } from "@util/format";
 import { wrapPreCopy } from "@util/wrapPre";
-
-const publishedElem = document.querySelector<HTMLParagraphElement>(".published")!;
-
-if (publishedElem.dataset.lastupdated) {
-  const updatedDateTime = new Date(publishedElem.dataset.lastupdated);
-  const lastUpdatedStr = timeAgo(updatedDateTime);
-  publishedElem.innerText += ` (Last Updated: ${lastUpdatedStr})`;
-}
 
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("pre").forEach(pre => wrapPreCopy(pre));

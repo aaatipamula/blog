@@ -4,6 +4,7 @@ import astroMermaid from 'astro-mermaid';
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://blog.aniketh.dev",
   integrations: [astroMermaid()],
   markdown: {
     shikiConfig: {
