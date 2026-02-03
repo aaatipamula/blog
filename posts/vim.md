@@ -11,7 +11,11 @@ isPublic: true
 
 Vim is often touted as a must-learn developer tool, but what really makes it worth learning? There are plenty of reasons to learn Vim, but the reasons why *I* keep going back to it are because of **vim motions** and **text objects** among some other things like customizability.
 
-Vim motions take a bit to learn but once you learn them its like navigating text on roller skates. The core idea of vim is to be able to do everything with your keyboard. This is achieved through [modal editing](https://www.youtube.com/watch?v=wlR5gYd6um0). You always open vim in NORMAL mode. This mode allows you to navigate the text. But you don't just have to arrow through every line and character to get exactly where you need! Most beginners just use *hjkl* to move but there are so many other ways to navigate text. Check out the [Cool Vim Tips]() section for some better ways to navigate text.
+> Vim Motions - *Edit text like a wizard*
+
+Vim motions take a bit to learn but once you learn them its like navigating text on roller skates. The core idea of vim is to be able to do everything with your keyboard. This is achieved through [modal editing](https://www.youtube.com/watch?v=wlR5gYd6um0). You always open vim in NORMAL mode. This mode allows you to navigate the text. But you don't just have to arrow through every line and character to get exactly where you need! Most beginners just use *hjkl* to move but there are so many other ways to navigate text. Check out the [Cool Vim Tips](#cool-vim-tips) section for some better ways to navigate text.
+
+> Text Objects - *A mind palace for you text*
 
 Text objects are probably the best feature of Vim in my opinion. Text objects allow for users to manipulate specific groups of text, such as words, sentences, paragraphs, text inside brackets, braces, tags, etc. While this is somewhat useful when dealing with regular text, it can be very useful to a developer. For example say I have the following function.
 
@@ -24,6 +28,8 @@ int foo(int a, int b) {
 If I wanted to replace the parameters to the function with something else, all I would have to do is just navigate to the parenthesis and type `ci(` and boom all the text inside the parenthesis is gone and I'm in INSERT mode. 
 
 It seems like a trivial example because you can do the exact same thing with a mouse by highlighting the text and typing. But when you really start to get comfortable with Vim it feels like you don't have to *think* about doing that, it just *happens*. That sounds kinda strange, but I feel like other proficient Vim users can attest to this. Properly learning Vim can make your development experience feel seamless. You think more about coding and less about the actual actions you're taking.
+
+> Customizability - *Make vim yours*
 
 Vim and its more modern son Neovim are both insanely customizable. I get that not everyone wants to spend hours and customizing their configuration down to every last letter, and that's totally fair. There are plenty of pre-existing configurations such as [lunar vim](https://www.lunarvim.org/) and [nvchad](https://nvchad.com/). But really understanding my configuration was a great learning experience for me, and I got to make my editor feel like home. Most configurations also take Vim to the next level and really make it pretty close to an IDE like VS code.
 

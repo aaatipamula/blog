@@ -36,7 +36,7 @@
   --color-border: hsl(50 10% 30%);
 
   --text: hsl(50 10% 10%);
-  --text-muted: hsl(50 10% 30%);
+  --text-muted: hsl(50 10% 40%);
 
   /* Media query boundaries */
   --mq-tablet: 900px;
@@ -99,6 +99,10 @@ blockquote {
   margin-left: 0;
   padding-left: 1rem;
   border-left: 3px solid var(--color-border);
+}
+
+em {
+  color: var(--text-muted);
 }
 
 .clickable {
