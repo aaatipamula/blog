@@ -4,9 +4,10 @@ import { formatBlogDateLong } from "@util/format";
 
 interface Props {
   filename: string | undefined;
+  published: Date;
 }
 
-const { filename } = Astro.props;
+const { filename, published } = Astro.props;
 
 if (!filename) {
   throw Error("Invalid filename");
@@ -21,7 +22,7 @@ const lastUpdated = latestCommit.date !== firstCommit.date ? latestCommit.date :
 
 <div class="container">
   <p>
-    Published: {formatBlogDateLong(firstCommit.date)} 
+    Published: {formatBlogDateLong(published)} 
     {lastUpdated && (
     <span
       id="last-updated" 
@@ -30,11 +31,14 @@ const lastUpdated = latestCommit.date !== firstCommit.date ? latestCommit.date :
     </span>
     )}
   </p>
-  <ul>
-    {gitLog.map(commit => (
-    <li><a href={getCommitUrl(commit.hash)}>{commit.shortHash}</a> - {commit.message}</li>
-    ))}
-  </ul>
+  <details>
+    <summary>Changelog</summary>
+    <ul>
+      {gitLog.map(commit => (
+      <li><a href={getCommitUrl(commit.hash)}>{commit.shortHash}</a> - {commit.message}</li>
+      ))}
+    </ul>
+  </details>
 </div>
 
 <script>
@@ -54,10 +58,6 @@ if (lastUpdated) {
   font-family: "Source Code Pro", monospace;
 }
 
-ul {
-  border-radius: 3px;
-}
-
 a {
   color: var(--indigo);
   text-decoration: none;
@@ -74,5 +74,29 @@ a:visited {
 
 a:visited:hover {
   color: var(--violet-muted);
+}
+
+details > summary {
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+
+/* For webkit browsers */
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+details > summary::before {
+  vertical-align: middle;
+  font-family: "bootstrap-icons";
+  content: '\F231';
+  display: inline-block;
+  margin-right: 8px;
+  transition: transform 0.3s ease;
+}
+
+details[open] > summary::before {
+  transform: rotate(90deg);
 }
 </style>

@@ -32,7 +32,7 @@ const { Content } = await render(post);
         <h1 class="title">{post.data.title}</h1>
         {post.data.subTitle && <p class="subtitle">{post.data.subTitle}</p>}
       </div>
-      <LastUpdated filename={post.filePath} />
+      <LastUpdated published={post.data.publishedDate} filename={post.filePath} />
       <div class="tag-container">
         <Tag ids={post.data.tags} />
       </div>
