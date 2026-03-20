@@ -15,7 +15,7 @@ I've been using Arch Linux as my main operating system on my school laptop for a
 
 > I just *needed* to get off Windows.
 
-Although this past year has The switch was was long coming, even before [Microslop](https://microsoft.com) began to enshittify their operating system with AI and garbage updates[^microslop]. The inability to create local accounts and the sheer amount of bloat that I felt came with Windows was more than enough for me. The only reason it lived on my laptop this far was because I could may have needed to use the Office Suite (Excel, and *maybe* Word) for school work, and because my laptop (An Asus Zephyrus G14 2022 with its own set of problems) had better driver support for Windows. My laptop felt slow even though it was barely 3 years old, and most of my development work was done on WSL anyways (which took what seemed like an eternity to start up).
+Although many people have been switching to Linux this past year for various *ahem* reasons, this switch was was long coming for me. Even before [Microslop](https://microsoft.com) began to enshittify their operating system with AI and pushing out garbage updates[^microslop]. The inability to create local accounts and the sheer amount of bloat that I felt came with Windows was more than enough for me. The only reason it lived on my laptop this far was because I may have needed to use the Office Suite (Excel, and *maybe* Word) for school work, and because my laptop (An Asus Zephyrus G14 2022 with its own set of problems) had better driver support for Windows. My laptop felt slow even though it was barely 3 years old, and most of my development work was done on WSL anyways (which took what seemed like an eternity to start up).
 
 I had also discovered the joys and epic utility of [tiling window managers](https://en.wikipedia.org/wiki/Tiling_window_manager) and was using [Glaze-WM](https://github.com/glzr-io/glazewm) in Windows, but wasn't completely satisfied by its performance. It just felt clunky on startup and I had a few small issues with window layouts. Not to degrade the efforts of the Glaze developers, however. They were and are constantly pushing fixes and making improvements (at the time of writing this post at least) and doing an amazing job of putting together that wonderful project. I just saw how much more seamless (and better looking) tiling window management could be in Linux and knew I had to try it.
 
@@ -53,7 +53,7 @@ I was completely stumped as to why Arch didn't just boot, and it took me a few d
 
 That aside, I thought the actual install of Arch was pretty easy. I actually learned a lot about how an OS is installed on a system too. The wiki page (at least for the install section) was very detailed and informative, much like many Arch nerds online have touted. Although, I do see how it can be very overwhelming for anyone who is not at least vaguely familiar with Linux, the command line, or common applications and operating system components. I won't go through all the steps of my install since it was pretty bog-standard. The only thing I changed was using a [swap file](https://wiki.archlinux.org/title/Swap#Swap_file) instead of a [swap partition](https://wiki.archlinux.org/title/Swap#Swap_partition).
 
-# Post-Install
+# Post-Install 📝
 
 This is where my things got more interesting. For those who aren't familiar, Arch is an extremely bare-bones operating system by default. It really only gives you the minimum you *need* to have your OS functional. Installing and configuring everything you need is up to you, including things like networking, time sync, keyboard configuration, sound servers, and on and on and on.
 
@@ -158,7 +158,7 @@ Most things didn't need too much configuration, especially terminal emulators li
 
 I found this process to be fun (because I'm a nerd like that) but I definitely see how anyone would find it more so annoying or cumbersome. However, there are some tools that I've recently found which make it much easier to get things up and running including one for Wayland that I'm trying out right now called [noctalia shell](https://noctalia.dev/) (pretty solid btw 😤).
 
-# Final Thoughts
+# Final Thoughts 💭
 
 Arch is super fun to use (at least in the eyes of a Linux nerd). I learned a lot about Linux and the customization and ability to use the most up to date packages was not only fun, but extremely useful for me. Being able to install pretty much everything from `pacman` or the `AUR` made managing my system so much easier than using multiple package managers. Having to configure all my system programs from scratch was time consuming and somewhat challenging, but honestly I think I learned a lot and had fun doing it.
 
