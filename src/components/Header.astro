@@ -1,27 +1,41 @@
 ---
 import PERSONAL_DATA from "@data/personal";
+import Search from "@components/Search.astro";
+import { getCollection } from "astro:content";
+
+const isDev = import.meta.env.DEV;
+const allPosts = await getCollection("blogPosts");
+const posts = allPosts
+  .filter(p => p.data.isPublic || isDev)
+  .map(p => ({
+    id: p.id,
+    title: p.data.title,
+    subTitle: p.data.subTitle ?? null,
+    tags: p.data.tags,
+    publishedDate: p.data.publishedDate.toISOString(),
+  }));
 ---
 
 <div class="title-container">
   <a href="/"><h1>{PERSONAL_DATA.firstName}'s Blog</h1></a>
 
-  <!-- <input class="search-input" placeholder="Search" type="search"/> -->
+  <div class="header-right">
+    <Search posts={posts} />
 
-  <div class="left">
-    <a href={PERSONAL_DATA.website}>
-      <i class="bi bi-globe" />
-    </a>
-    <a href=`mailto:${PERSONAL_DATA.email}`>
-      <i class="bi bi-envelope-at" />
-    </a>
-    {PERSONAL_DATA.socialMedia.map(i => (
-      <a href={i.url}>
-        <i class=`bi ${i.icon}` />
+    <div class="social-links">
+      <a href={PERSONAL_DATA.website}>
+        <i class="bi bi-globe" />
       </a>
-    ))}
+      <a href=`mailto:${PERSONAL_DATA.email}`>
+        <i class="bi bi-envelope-at" />
+      </a>
+      {PERSONAL_DATA.socialMedia.map(i => (
+        <a href={i.url}>
+          <i class=`bi ${i.icon}` />
+        </a>
+      ))}
+    </div>
   </div>
-
-
 </div>
 
 <style>
@@ -35,27 +49,37 @@ a:hover {
   color: var(--text-muted);
 }
 
-.left a {
-  margin-left: 0.5rem;
-  font-size: 1.5rem;
-  float: right;
-}
-
-@media (max-width: 600px) {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
 .title-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.search-input {
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-bg);
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.social-links a {
+  margin-left: 0.4rem;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .title-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .header-right {
+    justify-content: flex-end;
+  }
 }
 </style>

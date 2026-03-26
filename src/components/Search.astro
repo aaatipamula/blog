@@ -1,0 +1,559 @@
+---
+// Search.astro
+// Accepts all posts as a prop so it can filter client-side without extra fetches
+interface PostEntry {
+  id: string;
+  title: string;
+  subTitle?: string;
+  tags: string[];
+  publishedDate: string; // ISO string
+}
+
+interface Props {
+  posts: PostEntry[];
+}
+
+const { posts } = Astro.props;
+---
+
+<!-- Search trigger button (visible in header) -->
+<div class="search-wrapper">
+  <!-- Full bar on desktop -->
+  <button class="search-bar" id="search-trigger" aria-label="Search posts">
+    <i class="bi bi-search search-icon-inline"></i>
+    <span class="search-placeholder">Search posts…</span>
+    <kbd class="search-kbd">⌘K</kbd>
+  </button>
+
+  <!-- Icon only on mobile -->
+  <button class="search-icon-btn" id="search-trigger-mobile" aria-label="Search posts">
+    <i class="bi bi-search"></i>
+  </button>
+</div>
+
+<!-- Modal overlay -->
+<div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-modal">
+    <div class="search-input-row">
+      <i class="bi bi-search search-modal-icon" id="search-mode-icon"></i>
+      <input
+        id="search-input"
+        class="search-modal-input"
+        type="text"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="Search posts… (use # to search by tag)"
+        aria-label="Search"
+      />
+      <button class="search-close-btn" id="search-close" aria-label="Close search">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="search-mode-hint" id="search-mode-hint">
+      Searching by <strong>title</strong> — type <code>#</code> to search by tag
+    </div>
+
+    <div class="search-results" id="search-results" role="listbox">
+      <!-- populated by JS -->
+    </div>
+
+    <div class="search-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> open</span>
+      <span><kbd>Esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ posts }}>
+  const overlay = document.getElementById("search-overlay");
+  const input = document.getElementById("search-input");
+  const results = document.getElementById("search-results");
+  const modeHint = document.getElementById("search-mode-hint");
+  const modeIcon = document.getElementById("search-mode-icon");
+
+  let selectedIndex = -1;
+
+  // ── Open / Close ──────────────────────────────────────────────
+  function openSearch() {
+    overlay.classList.add("open");
+    input.value = "";
+    input.focus();
+    selectedIndex = -1;
+    renderResults([]);
+    updateHint("");
+  }
+
+  function closeSearch() {
+    overlay.classList.remove("open");
+    selectedIndex = -1;
+  }
+
+  document.getElementById("search-trigger").addEventListener("click", openSearch);
+  document.getElementById("search-trigger-mobile").addEventListener("click", openSearch);
+  document.getElementById("search-close").addEventListener("click", closeSearch);
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeSearch();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+      e.preventDefault();
+      overlay.classList.contains("open") ? closeSearch() : openSearch();
+    }
+    if (e.key === "Escape" && overlay.classList.contains("open")) closeSearch();
+  });
+
+  // ── Mode hint ─────────────────────────────────────────────────
+  function updateHint(query) {
+    const isTag = query.startsWith("#");
+    if (isTag) {
+      modeHint.innerHTML = `Searching by <strong>tag</strong> — remove <code>#</code> to search by title`;
+      modeIcon.className = "bi bi-hash search-modal-icon tag-mode";
+    } else {
+      modeHint.innerHTML = `Searching by <strong>title</strong> — type <code>#</code> to search by tag`;
+      modeIcon.className = "bi bi-search search-modal-icon";
+    }
+  }
+
+  // ── Search logic ──────────────────────────────────────────────
+  function search(raw) {
+    const query = raw.trim();
+    if (!query) return [];
+
+    if (query.startsWith("#")) {
+      const tagQuery = query.slice(1).toLowerCase();
+      if (!tagQuery) return [];
+      return posts.filter(p =>
+        p.tags.some(t => t.toLowerCase().includes(tagQuery))
+      );
+    } else {
+      const q = query.toLowerCase();
+      return posts.filter(p =>
+        p.title.toLowerCase().includes(q) ||
+        (p.subTitle && p.subTitle.toLowerCase().includes(q))
+      );
+    }
+  }
+
+  // ── Render ────────────────────────────────────────────────────
+  function highlight(text, query) {
+    if (!query) return text;
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return text.replace(
+      new RegExp(`(${escaped})`, "gi"),
+      `<mark>$1</mark>`
+    );
+  }
+
+  function renderResults(matches) {
+    results.innerHTML = "";
+    selectedIndex = -1;
+
+    if (!matches.length) {
+      results.innerHTML = `<div class="search-empty">No results found</div>`;
+      return;
+    }
+
+    matches.forEach((post, i) => {
+      const rawQuery = input.value.trim();
+      const isTag = rawQuery.startsWith("#");
+      const q = isTag ? rawQuery.slice(1) : rawQuery;
+
+      const titleHtml = highlight(post.title, q);
+      const subHtml = post.subTitle
+        ? `<span class="result-sub">${highlight(post.subTitle, q)}</span>`
+        : "";
+
+      const tagsHtml = post.tags
+        .map(t => {
+          const tagText = isTag ? highlight(t, q) : t;
+          return `<span class="result-tag">${tagText}</span>`;
+        })
+        .join("");
+
+      const item = document.createElement("a");
+      item.className = "search-result-item";
+      item.href = `/post/${post.id}`;
+      item.setAttribute("role", "option");
+      item.dataset.index = i;
+
+      item.innerHTML = `
+        <div class="result-left">
+          <i class="bi bi-file-text result-icon"></i>
+          <div class="result-text">
+            <span class="result-title">${titleHtml}</span>
+            ${subHtml}
+          </div>
+        </div>
+        <div class="result-tags">${tagsHtml}</div>
+      `;
+
+      item.addEventListener("mouseenter", () => setSelected(i));
+
+      item.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeSearch();
+        window.location.href = item.href;
+      });
+
+      results.appendChild(item);
+    });
+  }
+
+  // ── Keyboard navigation ───────────────────────────────────────
+  function setSelected(index) {
+    const items = results.querySelectorAll("a[role='option']");
+    items.forEach(el => el.classList.remove("selected"));
+    if (index >= 0 && index < items.length) {
+      selectedIndex = index;
+      items[index].classList.add("selected");
+      items[index].scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  input.addEventListener("keydown", (e) => {
+    const items = results.querySelectorAll("a[role='option']");
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelected(Math.min(selectedIndex + 1, items.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelected(Math.max(selectedIndex - 1, 0));
+    } else if (e.key === "Enter") {
+      if (selectedIndex >= 0 && items[selectedIndex]) {
+        items[selectedIndex].click();
+      }
+    }
+  });
+
+  // ── Live input ────────────────────────────────────────────────
+  input.addEventListener("input", () => {
+    const val = input.value;
+    updateHint(val);
+    const matches = search(val);
+    if (val.trim()) {
+      renderResults(matches);
+    } else {
+      renderResults([]);
+    }
+  });
+</script>
+
+<style>
+/* ── Trigger bar ─────────────────────────────────────────────── */
+.search-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--text-muted);
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 120ms, background-color 120ms;
+  min-width: 180px;
+}
+
+.search-bar:hover {
+  background-color: var(--color-bg-light);
+  border-color: var(--text-muted);
+}
+
+.search-placeholder {
+  flex: 1;
+  text-align: left;
+}
+
+.search-icon-inline {
+  font-size: 0.9rem;
+}
+
+.search-kbd {
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background-color: var(--color-bg-dark);
+  border: 1px solid var(--color-border);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Mobile icon button */
+.search-icon-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 1.3rem;
+  padding: 0.25rem;
+  transition: color 120ms;
+}
+
+.search-icon-btn:hover {
+  color: var(--text-muted);
+}
+
+@media (max-width: 600px) {
+  .search-bar {
+    display: none;
+  }
+  .search-icon-btn {
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ── Overlay ─────────────────────────────────────────────────── */
+.search-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10vh;
+}
+
+.search-overlay.open {
+  display: flex;
+  animation: overlay-in 140ms ease;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Modal ───────────────────────────────────────────────────── */
+.search-modal {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  width: min(620px, 90vw);
+  box-shadow:
+    0 4px 6px -1px rgba(0,0,0,0.1),
+    0 20px 50px -10px rgba(0,0,0,0.25);
+  overflow: hidden;
+  animation: modal-in 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-in {
+  from { transform: translateY(-12px) scale(0.97); opacity: 0; }
+  to   { transform: translateY(0)     scale(1);    opacity: 1; }
+}
+
+/* ── Input row ───────────────────────────────────────────────── */
+.search-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-bg-dark);
+}
+
+.search-modal-icon {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: color 200ms;
+}
+
+.search-modal-icon.tag-mode {
+  color: var(--indigo);
+}
+
+.search-modal-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  color: var(--text);
+  caret-color: var(--indigo);
+}
+
+.search-modal-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 1rem;
+  padding: 0.2rem;
+  line-height: 1;
+  border-radius: 4px;
+  transition: color 120ms, background-color 120ms;
+  display: flex;
+  align-items: center;
+}
+
+.search-close-btn:hover {
+  color: var(--text);
+  background-color: var(--color-bg-dark);
+}
+
+/* ── Mode hint ───────────────────────────────────────────────── */
+.search-mode-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-family: "Source Code Pro", monospace;
+  padding: 0.35rem 1rem;
+  border-bottom: 1px solid var(--color-bg-dark);
+  background-color: var(--color-bg-light);
+}
+
+.search-mode-hint code {
+  background-color: var(--color-bg-dark);
+  padding: 0 0.25rem;
+  border-radius: 3px;
+}
+
+/* ── Results ─────────────────────────────────────────────────── */
+.search-results {
+  max-height: 380px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.search-footer {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid var(--color-bg-dark);
+  background-color: var(--color-bg-light);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: "Source Code Pro", monospace;
+}
+
+.search-footer kbd {
+  display: inline-block;
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  font-family: inherit;
+  font-size: inherit;
+  margin-right: 0.2rem;
+}
+</style>
+
+<style is:global>
+/* ── JS-created result elements ──────────────────────────────── */
+.search-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  text-decoration: none;
+  color: var(--text);
+  font-family: "Montserrat", sans-serif;
+  border-bottom: 1px solid var(--color-bg-dark);
+  transition: background-color 100ms;
+  cursor: pointer;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover,
+.search-result-item.selected {
+  background-color: var(--color-bg-light);
+}
+
+.result-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.result-icon {
+  color: var(--text-muted);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.result-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.result-title {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-sub {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-tags {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  max-width: 40%;
+}
+
+.result-tag {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  background-color: var(--color-bg-dark);
+  color: var(--text-muted);
+  font-family: "Source Code Pro", monospace;
+  white-space: nowrap;
+}
+
+mark {
+  background-color: hsl(50 80% 75%);
+  color: var(--text);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+</style>
