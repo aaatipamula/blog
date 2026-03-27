@@ -18,7 +18,6 @@ create_file()
   echo "subTitle: "      >> "$1"
   echo "tags: []"        >> "$1"
   echo "publishedDate: " >> "$1"
-  echo "updatedDate: "   >> "$1"
   echo "isPublic: false" >> "$1"
   echo "---"             >> "$1"
   echo                   >> "$1"
